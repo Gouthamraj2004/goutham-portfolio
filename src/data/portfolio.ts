@@ -20,7 +20,7 @@ export const siteConfig = {
   email: "gouthamrajdev@gmail.com",
   linkedin: "https://www.linkedin.com/in/gouthamraj-r-561744257/", 
   github: "https://github.com/Gouthamraj2004", 
-  resumePath: "L:\\goutham-portfolio\\public\\resume\\Gouthamraj_3dArtist.pdf",   
+  resumePath: "/resume/Gouthamraj_3dArtist.pdf",   
   profileImage: "/images/profile/profile.jpg",
   availability: "Available for Opportunities",
 };
