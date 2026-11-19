@@ -1,17 +1,15 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { Mail, Send, CheckCircle, AlertCircle } from "lucide-react";
+import { Mail, Send, CheckCircle } from "lucide-react";
 import { siteConfig } from "@/data/portfolio";
 import SectionHeading from "@/components/ui/SectionHeading";
 import ScrollReveal from "@/components/ui/ScrollReveal";
 
-// Inline SVG icons for LinkedIn and GitHub (removed from lucide-react)
 const LinkedInIcon = ({ size = 16 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
-    <rect width="4" height="12" x="2" y="9" />
-    <circle cx="4" cy="4" r="2" />
+    <rect width="4" height="12" x="2" y="9" /><circle cx="4" cy="4" r="2" />
   </svg>
 );
 
@@ -25,24 +23,16 @@ const GitHubIcon = ({ size = 16 }: { size?: number }) => (
 type FormStatus = "idle" | "submitting" | "success" | "error";
 
 export default function Contact() {
-  const [formState, setFormState] = useState({
-    name: "",
-    email: "",
-    message: "",
-  });
+  const [formState, setFormState] = useState({ name: "", email: "", message: "" });
   const [formStatus, setFormStatus] = useState<FormStatus>("idle");
   const [feedback, setFeedback] = useState("");
-
-  const formEndpoint = process.env.NEXT_PUBLIC_FORMSPREE_ENDPOINT;
+  const accessKey = process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY;
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    if (!formEndpoint) {
+    if (!accessKey) {
       setFormStatus("error");
-      setFeedback(
-        "The contact form is not configured yet. Please use the Email Me button above for now."
-      );
+      setFeedback("The contact form is not configured yet. Please use the Email Me button above for now.");
       return;
     }
 
@@ -50,30 +40,25 @@ export default function Contact() {
     setFeedback("");
 
     try {
-      const response = await fetch(formEndpoint, {
+      const response = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
-        body: new FormData(e.currentTarget),
-        headers: {
-          Accept: "application/json",
-        },
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          access_key: accessKey,
+          name: formState.name,
+          email: formState.email,
+          message: formState.message,
+          subject: "New message from your portfolio",
+          botcheck: "",
+        }),
       });
 
       const result = (await response.json().catch(() => null)) as
-        | { errors?: Array<{ message?: string }> }
+        | { success?: boolean; message?: string }
         | null;
 
-      if (!response.ok) {
-        const errorMessage = result?.errors
-          ?.map((error) => error.message)
-          .filter(Boolean)
-          .join(", ");
-
-        throw new Error(
-          errorMessage ||
-            (response.status === 429
-              ? "Too many submissions. Please wait a moment and try again."
-              : "Your message could not be sent. Please try again.")
-        );
+      if (!response.ok || !result?.success) {
+        throw new Error(result?.message || "Your message could not be sent. Please try again.");
       }
 
       setFormStatus("success");
@@ -81,11 +66,7 @@ export default function Contact() {
       setFormState({ name: "", email: "", message: "" });
     } catch (error) {
       setFormStatus("error");
-      setFeedback(
-        error instanceof Error
-          ? error.message
-          : "Something went wrong. Please try again or email me directly."
-      );
+      setFeedback(error instanceof Error ? error.message : "Something went wrong. Please try again or email me directly.");
     }
   };
 
@@ -97,174 +78,67 @@ export default function Contact() {
     }
   };
 
-  const isConfigured = Boolean(formEndpoint);
+  const isConfigured = Boolean(accessKey);
 
   return (
     <section id="contact" className="py-24 md:py-32 lg:py-40 border-t border-border">
       <div className="max-w-[1400px] mx-auto px-6 md:px-10">
-        <SectionHeading
-          title="Contact"
-          subtitle="Let's create something."
-          align="center"
-        />
-
+        <SectionHeading title="Contact" subtitle="Let's create something." align="center" />
         <div className="max-w-3xl mx-auto">
-          {/* Statement */}
           <ScrollReveal>
             <p className="text-center text-text-secondary leading-relaxed mb-12 max-w-xl mx-auto">
-              I&apos;m currently looking for opportunities where I can contribute
-              as a 3D Artist, 3D Animator or Game Artist. If you have a project
-              or position that could be a good fit, I&apos;d love to hear from you.
+              I&apos;m currently looking for opportunities where I can contribute as a 3D Artist, 3D Animator or Game Artist. If you have a project or position that could be a good fit, I&apos;d love to hear from you.
             </p>
           </ScrollReveal>
 
-          {/* Contact Buttons */}
           <ScrollReveal delay={0.1}>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
-              <a
-                href={`mailto:${siteConfig.email}`}
-                aria-label="Send email"
-                className="group inline-flex items-center gap-3 px-6 py-3.5 bg-accent/10 border border-accent/30 text-accent hover:bg-accent/20 hover:border-accent/50 transition-all duration-300 rounded-sm text-sm uppercase tracking-[0.15em] font-display"
-              >
-                <Mail size={16} />
-                Email Me
+              <a href={`mailto:${siteConfig.email}`} aria-label="Send email" className="group inline-flex items-center gap-3 px-6 py-3.5 bg-accent/10 border border-accent/30 text-accent hover:bg-accent/20 hover:border-accent/50 transition-all duration-300 rounded-sm text-sm uppercase tracking-[0.15em] font-display">
+                <Mail size={16} />Email Me
               </a>
-
-              <a
-                href={siteConfig.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Visit LinkedIn profile"
-                className="group inline-flex items-center gap-3 px-6 py-3.5 border border-border text-text-secondary hover:border-border-hover hover:text-text-primary transition-all duration-300 rounded-sm text-sm uppercase tracking-[0.15em] font-display"
-              >
-                <LinkedInIcon size={16} />
-                LinkedIn
+              <a href={siteConfig.linkedin} target="_blank" rel="noopener noreferrer" aria-label="Visit LinkedIn profile" className="group inline-flex items-center gap-3 px-6 py-3.5 border border-border text-text-secondary hover:border-border-hover hover:text-text-primary transition-all duration-300 rounded-sm text-sm uppercase tracking-[0.15em] font-display">
+                <LinkedInIcon size={16} />LinkedIn
               </a>
-
-              <a
-                href={siteConfig.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Visit GitHub profile"
-                className="group inline-flex items-center gap-3 px-6 py-3.5 border border-border text-text-secondary hover:border-border-hover hover:text-text-primary transition-all duration-300 rounded-sm text-sm uppercase tracking-[0.15em] font-display"
-              >
-                <GitHubIcon size={16} />
-                GitHub
+              <a href={siteConfig.github} target="_blank" rel="noopener noreferrer" aria-label="Visit GitHub profile" className="group inline-flex items-center gap-3 px-6 py-3.5 border border-border text-text-secondary hover:border-border-hover hover:text-text-primary transition-all duration-300 rounded-sm text-sm uppercase tracking-[0.15em] font-display">
+                <GitHubIcon size={16} />GitHub
               </a>
             </div>
           </ScrollReveal>
 
-          {/* Divider */}
           <ScrollReveal delay={0.15}>
             <div className="flex items-center gap-4 mb-12">
               <div className="flex-1 h-[1px] bg-border" />
-              <span className="text-xs uppercase tracking-[0.2em] text-text-muted">
-                or send a message
-              </span>
+              <span className="text-xs uppercase tracking-[0.2em] text-text-muted">or send a message</span>
               <div className="flex-1 h-[1px] bg-border" />
             </div>
           </ScrollReveal>
 
-          {/* Contact Form */}
           <ScrollReveal delay={0.2}>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
-                  <label
-                    htmlFor="contact-name"
-                    className="block text-xs uppercase tracking-[0.2em] text-text-tertiary mb-3"
-                  >
-                    Name
-                  </label>
-                  <input
-                    id="contact-name"
-                    name="name"
-                    type="text"
-                    autoComplete="name"
-                    required
-                    value={formState.name}
-                    onChange={(e) => updateField("name", e.target.value)}
-                    className="w-full px-4 py-3 bg-bg-card border border-border rounded-sm text-text-primary text-sm placeholder:text-text-muted focus:border-accent/50 focus:outline-none focus:ring-1 focus:ring-accent/20 transition-all duration-300"
-                    placeholder="Your name"
-                  />
+                  <label htmlFor="contact-name" className="block text-xs uppercase tracking-[0.2em] text-text-tertiary mb-3">Name</label>
+                  <input id="contact-name" type="text" autoComplete="name" required value={formState.name} onChange={(e) => updateField("name", e.target.value)} className="w-full px-4 py-3 bg-bg-card border border-border rounded-sm text-text-primary text-sm placeholder:text-text-muted focus:border-accent/50 focus:outline-none focus:ring-1 focus:ring-accent/20 transition-all duration-300" placeholder="Your name" />
                 </div>
-
                 <div>
-                  <label
-                    htmlFor="contact-email"
-                    className="block text-xs uppercase tracking-[0.2em] text-text-tertiary mb-3"
-                  >
-                    Email
-                  </label>
-                  <input
-                    id="contact-email"
-                    name="email"
-                    type="email"
-                    autoComplete="email"
-                    required
-                    value={formState.email}
-                    onChange={(e) => updateField("email", e.target.value)}
-                    className="w-full px-4 py-3 bg-bg-card border border-border rounded-sm text-text-primary text-sm placeholder:text-text-muted focus:border-accent/50 focus:outline-none focus:ring-1 focus:ring-accent/20 transition-all duration-300"
-                    placeholder="your@email.com"
-                  />
+                  <label htmlFor="contact-email" className="block text-xs uppercase tracking-[0.2em] text-text-tertiary mb-3">Email</label>
+                  <input id="contact-email" type="email" autoComplete="email" required value={formState.email} onChange={(e) => updateField("email", e.target.value)} className="w-full px-4 py-3 bg-bg-card border border-border rounded-sm text-text-primary text-sm placeholder:text-text-muted focus:border-accent/50 focus:outline-none focus:ring-1 focus:ring-accent/20 transition-all duration-300" placeholder="your@email.com" />
                 </div>
               </div>
-
               <div>
-                <label
-                  htmlFor="contact-message"
-                  className="block text-xs uppercase tracking-[0.2em] text-text-tertiary mb-3"
-                >
-                  Message
-                </label>
-                <textarea
-                  id="contact-message"
-                  name="message"
-                  required
-                  rows={5}
-                  value={formState.message}
-                  onChange={(e) => updateField("message", e.target.value)}
-                  className="w-full px-4 py-3 bg-bg-card border border-border rounded-sm text-text-primary text-sm placeholder:text-text-muted focus:border-accent/50 focus:outline-none focus:ring-1 focus:ring-accent/20 transition-all duration-300 resize-none"
-                  placeholder="Tell me about your project or opportunity..."
-                />
+                <label htmlFor="contact-message" className="block text-xs uppercase tracking-[0.2em] text-text-tertiary mb-3">Message</label>
+                <textarea id="contact-message" required rows={5} value={formState.message} onChange={(e) => updateField("message", e.target.value)} className="w-full px-4 py-3 bg-bg-card border border-border rounded-sm text-text-primary text-sm placeholder:text-text-muted focus:border-accent/50 focus:outline-none focus:ring-1 focus:ring-accent/20 transition-all duration-300 resize-none" placeholder="Tell me about your project or opportunity..." />
               </div>
 
-              <input type="hidden" name="_subject" value="New message from your portfolio" />
+              {/* Web3Forms honeypot spam check */}
+              <input type="checkbox" name="botcheck" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
 
-              {/* Submit */}
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <button
-                  type="submit"
-                  disabled={!isConfigured || formStatus === "submitting"}
-                  className="group inline-flex items-center justify-center gap-3 px-7 py-3.5 bg-accent/10 border border-accent/30 text-accent hover:bg-accent/20 hover:border-accent/50 transition-all duration-300 rounded-sm text-sm uppercase tracking-[0.15em] font-display disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-accent/10"
-                >
-                  {formStatus === "submitting" ? (
-                    <>Sending...</>
-                  ) : formStatus === "success" ? (
-                    <>
-                      <CheckCircle size={16} />
-                      Sent!
-                    </>
-                  ) : (
-                    <>
-                      Send Message
-                      <Send
-                        size={14}
-                        className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"
-                      />
-                    </>
-                  )}
+                <button type="submit" disabled={!isConfigured || formStatus === "submitting"} className="group inline-flex items-center justify-center gap-3 px-7 py-3.5 bg-accent/10 border border-accent/30 text-accent hover:bg-accent/20 hover:border-accent/50 transition-all duration-300 rounded-sm text-sm uppercase tracking-[0.15em] font-display disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-accent/10">
+                  {formStatus === "submitting" ? <>Sending...</> : formStatus === "success" ? <><CheckCircle size={16} />Sent!</> : <>Send Message<Send size={14} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" /></>}
                 </button>
-
-                <p
-                  role="status"
-                  aria-live="polite"
-                  className={`text-sm ${formStatus === "success" ? "text-emerald-400" : formStatus === "error" ? "text-red-400" : "text-text-muted"}`}
-                >
-                  {feedback ||
-                    (!isConfigured
-                      ? "Contact form setup is pending. Please use Email Me above for now."
-                      : "")}
+                <p role="status" aria-live="polite" className={`text-sm ${formStatus === "success" ? "text-emerald-400" : formStatus === "error" ? "text-red-400" : "text-text-muted"}`}>
+                  {feedback || (!isConfigured ? "Contact form setup is pending. Please use Email Me above for now." : "")}
                 </p>
               </div>
             </form>
