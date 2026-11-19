@@ -78,31 +78,31 @@ A collection of reusable Blender assets and 3D models.
    cp .env.example .env.local
    ```
 
-   Add your Formspree endpoint to `.env.local`:
+4. Add your Web3Forms access key to `.env.local`:
 
    ```env
-   NEXT_PUBLIC_FORMSPREE_ENDPOINT=https://formspree.io/f/YOUR_FORM_ID
+   NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY=YOUR_WEB3FORMS_ACCESS_KEY
    ```
 
-4. Start the development server:
+5. Start the development server:
 
    ```bash
    npm run dev
    ```
 
-5. Open [http://localhost:3000](http://localhost:3000) in your browser.
+6. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Contact Form Setup
 
-The message form uses [Formspree](https://formspree.io/) to deliver submissions.
+The portfolio contact form uses [Web3Forms](https://web3forms.com/) to deliver messages to your inbox.
 
-1. Create a Formspree account and verify your email.
-2. Create a new form and set its target/notification email to **gouthamrajdev@gmail.com**.
-3. Copy the form endpoint from the form's **Integration** tab.
-4. Add it as `NEXT_PUBLIC_FORMSPREE_ENDPOINT` in your local `.env.local` and in the Vercel project's environment variables (Production, Preview, and Development as needed).
+1. Create a Web3Forms account and create an access key.
+2. Set the destination email to **gouthamrajdev@gmail.com** and complete any email verification requested.
+3. Add the access key as `NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY` in your local `.env.local` file.
+4. Add the same variable to the Vercel project under **Settings → Environment Variables**. Enable it for Production, Preview, and Development as needed.
 5. Redeploy the Vercel project after adding or changing the environment variable.
 
-Form submissions are stored in the Formspree dashboard. Email notifications are sent according to the form's notification settings. The endpoint is public by design; do not put a private API key in a `NEXT_PUBLIC_` variable.
+Submissions are sent to the email address associated with the access key and can be reviewed through the Web3Forms dashboard. The access key is designed to be used in client-side forms; do not put private credentials or unrelated API secrets in a `NEXT_PUBLIC_` variable.
 
 ## Available Scripts
 
