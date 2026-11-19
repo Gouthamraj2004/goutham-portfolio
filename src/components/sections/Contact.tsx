@@ -5,7 +5,6 @@ import { Mail, Send, CheckCircle } from "lucide-react";
 import { siteConfig } from "@/data/portfolio";
 import SectionHeading from "@/components/ui/SectionHeading";
 import ScrollReveal from "@/components/ui/ScrollReveal";
-import MagneticButton from "@/components/ui/MagneticButton";
 
 // Inline SVG icons for LinkedIn and GitHub (removed from lucide-react)
 const LinkedInIcon = ({ size = 16 }: { size?: number }) => (
@@ -62,39 +61,36 @@ export default function Contact() {
           {/* Contact Buttons */}
           <ScrollReveal delay={0.1}>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
-              <MagneticButton
+              <a
                 href={`mailto:${siteConfig.email}`}
-                ariaLabel="Send email"
+                aria-label="Send email"
+                className="group inline-flex items-center gap-3 px-6 py-3.5 bg-accent/10 border border-accent/30 text-accent hover:bg-accent/20 hover:border-accent/50 transition-all duration-300 rounded-sm text-sm uppercase tracking-[0.15em] font-display"
               >
-                <span className="group inline-flex items-center gap-3 px-6 py-3.5 bg-accent/10 border border-accent/30 text-accent hover:bg-accent/20 hover:border-accent/50 transition-all duration-300 rounded-sm text-sm uppercase tracking-[0.15em] font-display cursor-pointer">
-                  <Mail size={16} />
-                  Email Me
-                </span>
-              </MagneticButton>
+                <Mail size={16} />
+                Email Me
+              </a>
 
-              <MagneticButton
+              <a
                 href={siteConfig.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
-                ariaLabel="Visit LinkedIn profile"
+                aria-label="Visit LinkedIn profile"
+                className="group inline-flex items-center gap-3 px-6 py-3.5 border border-border text-text-secondary hover:border-border-hover hover:text-text-primary transition-all duration-300 rounded-sm text-sm uppercase tracking-[0.15em] font-display"
               >
-                <span className="group inline-flex items-center gap-3 px-6 py-3.5 border border-border text-text-secondary hover:border-border-hover hover:text-text-primary transition-all duration-300 rounded-sm text-sm uppercase tracking-[0.15em] font-display cursor-pointer">
-                  <LinkedInIcon size={16} />
-                  LinkedIn
-                </span>
-              </MagneticButton>
+                <LinkedInIcon size={16} />
+                LinkedIn
+              </a>
 
-              <MagneticButton
+              <a
                 href={siteConfig.github}
                 target="_blank"
                 rel="noopener noreferrer"
-                ariaLabel="Visit GitHub profile"
+                aria-label="Visit GitHub profile"
+                className="group inline-flex items-center gap-3 px-6 py-3.5 border border-border text-text-secondary hover:border-border-hover hover:text-text-primary transition-all duration-300 rounded-sm text-sm uppercase tracking-[0.15em] font-display"
               >
-                <span className="group inline-flex items-center gap-3 px-6 py-3.5 border border-border text-text-secondary hover:border-border-hover hover:text-text-primary transition-all duration-300 rounded-sm text-sm uppercase tracking-[0.15em] font-display cursor-pointer">
-                  <GitHubIcon size={16} />
-                  GitHub
-                </span>
-              </MagneticButton>
+                <GitHubIcon size={16} />
+                GitHub
+              </a>
             </div>
           </ScrollReveal>
 
