@@ -1,36 +1,136 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Gouthamraj — 3D Artist & 3D Animator
 
-## Getting Started
+Personal portfolio website showcasing my work in **3D modelling, hard-surface modelling, materials, lighting, rendering, and 3D animation**.
 
-First, run the development server:
+<p align="center">
+  <a href="https://goutham-portfolio-two.vercel.app/"><strong>Visit Live Portfolio →</strong></a>
+  &nbsp;·&nbsp;
+  <a href="https://github.com/Gouthamraj2004"><strong>GitHub Profile</strong></a>
+</p>
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## About
+
+Hi, I'm **Gouthamraj R**, an aspiring 3D Artist and 3D Animator focused on Blender and digital 3D art. I enjoy creating 3D models, experimenting with materials and lighting, and bringing scenes to life through animation.
+
+This website brings together selected projects, my creative process, skills, experience, and contact details in one place.
+
+## Featured Work
+
+### The Creature
+A cinematic Blender animation featuring a dark atmospheric environment, creature animation, dramatic lighting, and suspense-driven camera movement.
+
+### Sword in Stone
+A Blender modelling and animation project featuring a sword embedded in stone, with detailed materials, an atmospheric scene, and cinematic motion.
+
+### 3D Model Assets for Blender
+A collection of reusable Blender assets and 3D models.  
+[Explore the asset repository →](https://github.com/Gouthamraj2004/Blender-3D-Models)
+
+## Portfolio Sections
+
+- **Home** — introduction and interactive 3D hero experience.
+- **Work** — selected 3D projects with visual previews and project details.
+- **About** — background, interests, and focus areas.
+- **Skills** — Blender modelling, materials, rendering, animation, and asset development.
+- **Creative Process** — an overview of my workflow, from concept and modelling to final rendering and asset preparation.
+- **Resume** — access to my résumé.
+- **Contact** — links to get in touch.
+
+## Built With
+
+| Technology | Purpose |
+| --- | --- |
+| [Next.js](https://nextjs.org/) | React framework and App Router |
+| [React](https://react.dev/) | UI components |
+| [TypeScript](https://www.typescriptlang.org/) | Type-safe development |
+| [Tailwind CSS](https://tailwindcss.com/) | Styling |
+| [Framer Motion](https://www.framer.com/motion/) | UI animation |
+| [GSAP](https://gsap.com/) | Animation and motion effects |
+| [Three.js](https://threejs.org/) | 3D graphics |
+| [React Three Fiber](https://r3f.docs.pmnd.rs/) & [Drei](https://drei.docs.pmnd.rs/) | Three.js in React |
+| [Lucide React](https://lucide.dev/) | Icons |
+
+## Run Locally
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) (LTS recommended)
+- npm
+
+### Installation
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/Gouthamraj2004/goutham-portfolio.git
+   cd goutham-portfolio
+   ```
+
+2. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+3. Start the development server:
+
+   ```bash
+   npm run dev
+   ```
+
+4. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## Available Scripts
+
+| Command | Description |
+| --- | --- |
+| `npm run dev` | Start the local development server |
+| `npm run build` | Create a production build |
+| `npm run start` | Run the production server |
+| `npm run lint` | Run ESLint |
+
+## Project Structure
+
+```text
+goutham-portfolio/
+├── public/
+│   ├── images/           # Profile and project images
+│   ├── videos/           # Project animation videos
+│   └── resume/           # Downloadable résumé
+├── src/
+│   ├── app/              # App Router, layout, and global styles
+│   ├── components/
+│   │   ├── layout/       # Navigation and footer
+│   │   ├── sections/     # Portfolio page sections
+│   │   ├── three/        # Three.js hero scene
+│   │   └── ui/           # Reusable UI components
+│   └── data/
+│       └── portfolio.ts  # Central portfolio content and project data
+├── package.json
+└── README.md
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Updating Portfolio Content
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Most portfolio text, project descriptions, skills, timeline entries, and contact links are centralized in:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+`src/data/portfolio.ts`
 
-## Learn More
+Project images, videos, and the résumé are stored under `public/`. Update the relevant paths in the portfolio data when adding or replacing media.
 
-To learn more about Next.js, take a look at the following resources:
+## Deployment
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The portfolio is deployed on [Vercel](https://vercel.com/):
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+**Live site:** https://goutham-portfolio-two.vercel.app/
 
-## Deploy on Vercel
+## Connect
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Portfolio:** https://goutham-portfolio-two.vercel.app/
+- **Email:** [gouthamrajdev@gmail.com](mailto:gouthamrajdev@gmail.com)
+- **GitHub:** https://github.com/Gouthamraj2004
+- **LinkedIn:** https://www.linkedin.com/in/gouthamraj-r-561744257/
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+Designed and developed by **Gouthamraj R**.
