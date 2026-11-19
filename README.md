@@ -34,7 +34,7 @@ A collection of reusable Blender assets and 3D models.
 - **Skills** — Blender modelling, materials, rendering, animation, and asset development.
 - **Creative Process** — an overview of my workflow, from concept and modelling to final rendering and asset preparation.
 - **Resume** — access to my résumé.
-- **Contact** — links to get in touch.
+- **Contact** — links to get in touch and a message form.
 
 ## Built With
 
@@ -72,13 +72,37 @@ A collection of reusable Blender assets and 3D models.
    npm install
    ```
 
-3. Start the development server:
+3. Create your local environment file:
+
+   ```bash
+   cp .env.example .env.local
+   ```
+
+   Add your Formspree endpoint to `.env.local`:
+
+   ```env
+   NEXT_PUBLIC_FORMSPREE_ENDPOINT=https://formspree.io/f/YOUR_FORM_ID
+   ```
+
+4. Start the development server:
 
    ```bash
    npm run dev
    ```
 
-4. Open [http://localhost:3000](http://localhost:3000) in your browser.
+5. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## Contact Form Setup
+
+The message form uses [Formspree](https://formspree.io/) to deliver submissions.
+
+1. Create a Formspree account and verify your email.
+2. Create a new form and set its target/notification email to **gouthamrajdev@gmail.com**.
+3. Copy the form endpoint from the form's **Integration** tab.
+4. Add it as `NEXT_PUBLIC_FORMSPREE_ENDPOINT` in your local `.env.local` and in the Vercel project's environment variables (Production, Preview, and Development as needed).
+5. Redeploy the Vercel project after adding or changing the environment variable.
+
+Form submissions are stored in the Formspree dashboard. Email notifications are sent according to the form's notification settings. The endpoint is public by design; do not put a private API key in a `NEXT_PUBLIC_` variable.
 
 ## Available Scripts
 
@@ -106,6 +130,7 @@ goutham-portfolio/
 │   │   └── ui/           # Reusable UI components
 │   └── data/
 │       └── portfolio.ts  # Central portfolio content and project data
+├── .env.example          # Environment variable template
 ├── package.json
 └── README.md
 ```
