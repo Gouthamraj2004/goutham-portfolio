@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { Mail, Send, CheckCircle } from "lucide-react";
+import { Mail, Send, CheckCircle, AlertCircle } from "lucide-react";
 import { siteConfig } from "@/data/portfolio";
 import SectionHeading from "@/components/ui/SectionHeading";
 import ScrollReveal from "@/components/ui/ScrollReveal";
@@ -22,22 +22,82 @@ const GitHubIcon = ({ size = 16 }: { size?: number }) => (
   </svg>
 );
 
+type FormStatus = "idle" | "submitting" | "success" | "error";
+
 export default function Contact() {
   const [formState, setFormState] = useState({
     name: "",
     email: "",
     message: "",
   });
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [formStatus, setFormStatus] = useState<FormStatus>("idle");
+  const [feedback, setFeedback] = useState("");
 
-  const handleSubmit = (e: FormEvent) => {
+  const formEndpoint = process.env.NEXT_PUBLIC_FORMSPREE_ENDPOINT;
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // TODO: Connect to your preferred form backend (Formspree, EmailJS, etc.)
-    // For now, this just shows a success state.
-    setIsSubmitted(true);
-    setTimeout(() => setIsSubmitted(false), 4000);
-    setFormState({ name: "", email: "", message: "" });
+
+    if (!formEndpoint) {
+      setFormStatus("error");
+      setFeedback(
+        "The contact form is not configured yet. Please use the Email Me button above for now."
+      );
+      return;
+    }
+
+    setFormStatus("submitting");
+    setFeedback("");
+
+    try {
+      const response = await fetch(formEndpoint, {
+        method: "POST",
+        body: new FormData(e.currentTarget),
+        headers: {
+          Accept: "application/json",
+        },
+      });
+
+      const result = (await response.json().catch(() => null)) as
+        | { errors?: Array<{ message?: string }> }
+        | null;
+
+      if (!response.ok) {
+        const errorMessage = result?.errors
+          ?.map((error) => error.message)
+          .filter(Boolean)
+          .join(", ");
+
+        throw new Error(
+          errorMessage ||
+            (response.status === 429
+              ? "Too many submissions. Please wait a moment and try again."
+              : "Your message could not be sent. Please try again.")
+        );
+      }
+
+      setFormStatus("success");
+      setFeedback("Thank you! Your message has been sent successfully.");
+      setFormState({ name: "", email: "", message: "" });
+    } catch (error) {
+      setFormStatus("error");
+      setFeedback(
+        error instanceof Error
+          ? error.message
+          : "Something went wrong. Please try again or email me directly."
+      );
+    }
   };
+
+  const updateField = (field: keyof typeof formState, value: string) => {
+    setFormState((prev) => ({ ...prev, [field]: value }));
+    if (formStatus !== "submitting") {
+      setFormStatus("idle");
+      setFeedback("");
+    }
+  };
+
+  const isConfigured = Boolean(formEndpoint);
 
   return (
     <section id="contact" className="py-24 md:py-32 lg:py-40 border-t border-border">
@@ -118,12 +178,12 @@ export default function Contact() {
                   </label>
                   <input
                     id="contact-name"
+                    name="name"
                     type="text"
+                    autoComplete="name"
                     required
                     value={formState.name}
-                    onChange={(e) =>
-                      setFormState((prev) => ({ ...prev, name: e.target.value }))
-                    }
+                    onChange={(e) => updateField("name", e.target.value)}
                     className="w-full px-4 py-3 bg-bg-card border border-border rounded-sm text-text-primary text-sm placeholder:text-text-muted focus:border-accent/50 focus:outline-none focus:ring-1 focus:ring-accent/20 transition-all duration-300"
                     placeholder="Your name"
                   />
@@ -138,15 +198,12 @@ export default function Contact() {
                   </label>
                   <input
                     id="contact-email"
+                    name="email"
                     type="email"
+                    autoComplete="email"
                     required
                     value={formState.email}
-                    onChange={(e) =>
-                      setFormState((prev) => ({
-                        ...prev,
-                        email: e.target.value,
-                      }))
-                    }
+                    onChange={(e) => updateField("email", e.target.value)}
                     className="w-full px-4 py-3 bg-bg-card border border-border rounded-sm text-text-primary text-sm placeholder:text-text-muted focus:border-accent/50 focus:outline-none focus:ring-1 focus:ring-accent/20 transition-all duration-300"
                     placeholder="your@email.com"
                   />
@@ -162,27 +219,28 @@ export default function Contact() {
                 </label>
                 <textarea
                   id="contact-message"
+                  name="message"
                   required
                   rows={5}
                   value={formState.message}
-                  onChange={(e) =>
-                    setFormState((prev) => ({
-                      ...prev,
-                      message: e.target.value,
-                    }))
-                  }
+                  onChange={(e) => updateField("message", e.target.value)}
                   className="w-full px-4 py-3 bg-bg-card border border-border rounded-sm text-text-primary text-sm placeholder:text-text-muted focus:border-accent/50 focus:outline-none focus:ring-1 focus:ring-accent/20 transition-all duration-300 resize-none"
                   placeholder="Tell me about your project or opportunity..."
                 />
               </div>
 
+              <input type="hidden" name="_subject" value="New message from your portfolio" />
+
               {/* Submit */}
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <button
                   type="submit"
-                  className="group inline-flex items-center gap-3 px-7 py-3.5 bg-accent/10 border border-accent/30 text-accent hover:bg-accent/20 hover:border-accent/50 transition-all duration-300 rounded-sm text-sm uppercase tracking-[0.15em] font-display"
+                  disabled={!isConfigured || formStatus === "submitting"}
+                  className="group inline-flex items-center justify-center gap-3 px-7 py-3.5 bg-accent/10 border border-accent/30 text-accent hover:bg-accent/20 hover:border-accent/50 transition-all duration-300 rounded-sm text-sm uppercase tracking-[0.15em] font-display disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-accent/10"
                 >
-                  {isSubmitted ? (
+                  {formStatus === "submitting" ? (
+                    <>Sending...</>
+                  ) : formStatus === "success" ? (
                     <>
                       <CheckCircle size={16} />
                       Sent!
@@ -198,11 +256,16 @@ export default function Contact() {
                   )}
                 </button>
 
-                {isSubmitted && (
-                  <p className="text-sm text-emerald-400 animate-pulse">
-                    Thank you! I&apos;ll get back to you soon.
-                  </p>
-                )}
+                <p
+                  role="status"
+                  aria-live="polite"
+                  className={`text-sm ${formStatus === "success" ? "text-emerald-400" : formStatus === "error" ? "text-red-400" : "text-text-muted"}`}
+                >
+                  {feedback ||
+                    (!isConfigured
+                      ? "Contact form setup is pending. Please use Email Me above for now."
+                      : "")}
+                </p>
               </div>
             </form>
           </ScrollReveal>
