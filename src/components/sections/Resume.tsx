@@ -3,7 +3,6 @@
 import { Download } from "lucide-react";
 import { siteConfig } from "@/data/portfolio";
 import ScrollReveal from "@/components/ui/ScrollReveal";
-import MagneticButton from "@/components/ui/MagneticButton";
 
 export default function Resume() {
   return (
@@ -24,23 +23,18 @@ export default function Resume() {
               experience and education.
             </p>
 
-            <MagneticButton
+            <a
               href={siteConfig.resumePath}
-              download
-              ariaLabel="Download resume"
+              download="Gouthamraj_3dArtist.pdf"
+              aria-label="Download resume"
+              className="group inline-flex items-center gap-3 px-8 py-4 bg-accent/10 border border-accent/30 text-accent hover:bg-accent/20 hover:border-accent/50 transition-all duration-300 rounded-sm text-sm uppercase tracking-[0.15em] font-display"
             >
-              {/* 
-                Place your resume PDF at:
-                /public/resume/Gouthamraj_3DArtist.pdf 
-              */}
-              <span className="group inline-flex items-center gap-3 px-8 py-4 bg-accent/10 border border-accent/30 text-accent hover:bg-accent/20 hover:border-accent/50 transition-all duration-300 rounded-sm text-sm uppercase tracking-[0.15em] font-display cursor-pointer">
-                Download Resume
-                <Download
-                  size={16}
-                  className="group-hover:translate-y-0.5 transition-transform"
-                />
-              </span>
-            </MagneticButton>
+              Download Resume
+              <Download
+                size={16}
+                className="group-hover:translate-y-0.5 transition-transform"
+              />
+            </a>
           </ScrollReveal>
         </div>
       </div>
